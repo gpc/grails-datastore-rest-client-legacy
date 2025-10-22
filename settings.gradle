@@ -1,24 +1,37 @@
-include ("grails-datastore-core",
-        "grails-datastore-web",
-        'grails-datastore-rest-client',
+plugins {
+    id 'com.gradle.develocity' version '4.1.1'
+    id 'com.gradle.common-custom-user-data-gradle-plugin' version '2.3'
+}
 
-        // Core GORM Implementation projects
-        'grails-datastore-gorm',
-        'grails-datastore-async',
-        'grails-datastore-gorm-async',
-        'grails-datastore-gorm-validation',
-        'grails-datastore-gorm-support',
-        'grails-datastore-gorm-grails2-support',
-        'grails-datastore-gorm-tck',
-        'grails-datastore-gorm-test',
-        'grails-datastore-gorm-grails2-test',
-        'grails-datastore-gorm-plugin-support',
+def isCI = System.getenv().containsKey('CI')
+def isLocal = !isCI
+def isReproducibleBuild = System.getenv('SOURCE_DATE_EPOCH') != null
+if (isReproducibleBuild) {
+    gradle.settingsEvaluated {
+        logger.warn('*************** Remote Build Cache Disabled due to Reproducible Build ********************')
+        logger.warn("Build date will be set to (SOURCE_DATE_EPOCH=${System.getenv("SOURCE_DATE_EPOCH")})")
+    }
+}
+
+develocity {
+    server = 'https://ge.grails.org'
+    buildScan {
+        tag('gpc')
+        tag('grails-postgresql-extensions')
+        publishing.onlyIf { it.authenticated }
+        uploadInBackground = isLocal
+    }
+}
+
+buildCache {
+    local { enabled = (isLocal && !isReproducibleBuild) || (isCI && isReproducibleBuild) }
+    remote(develocity.buildCache) {
+        push = isCI
+        enabled = !isReproducibleBuild
+    }
+}
 
 
-        // RX projects
-        'grails-datastore-gorm-rx',
-        'grails-datastore-gorm-rx-plugin-support',
+rootProject.name = 'grails-datastore-rest-client-legacy.ROOT'
 
-        // GORM Implementations
-        'grails-datastore-gorm-hibernate-core'
-)
+include ('grails-datastore-rest-client-legacy')

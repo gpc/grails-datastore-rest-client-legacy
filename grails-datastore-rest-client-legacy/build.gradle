@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.grails.org/grails/restricted" }
+        maven {
+            url = 'https://repository.apache.org/content/groups/snapshots'
+            content {
+                includeVersionByRegex('org[.]apache[.](grails|groovy).*', '.*', '.*-SNAPSHOT')
+            }
+        }
+    }
+    dependencies {
+        classpath platform("org.apache.grails:grails-bom:$grailsVersion")
+        classpath "org.apache.grails:grails-gradle-plugins"
+    }
+}
+
+group = "io.github.gpc"
+
+apply plugin: 'org.apache.grails.gradle.grails-plugin'
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.grails.org/grails/restricted" }
+    maven {
+        url = 'https://repository.apache.org/content/groups/snapshots'
+        content {
+            includeVersionByRegex('org[.]apache[.](grails|groovy).*', '.*', '.*-SNAPSHOT')
+        }
+    }
+}
+
+dependencies {
+    compileOnly platform("org.apache.grails:grails-bom:$grailsVersion")
+    compileOnly 'org.apache.grails:grails-dependencies-starter-web'
+    compileOnly 'commons-codec:commons-codec:1.19.0'
+    compileOnly 'com.google.code.gson:gson:2.13.2'
+    compileOnly 'org.apache.grails:grails-async'
+
+    testImplementation platform("org.apache.grails:grails-bom:$grailsVersion")
+    testImplementation 'org.apache.grails:grails-testing-support-web'
+    testImplementation 'org.apache.grails:grails-testing-support-datamapping'
+    testImplementation 'commons-codec:commons-codec:1.19.0'
+    testImplementation 'com.google.code.gson:gson:2.13.2'
+    testImplementation 'org.apache.grails:grails-async'
+
+}
+
+compileJava.options.release = 17
+
+grailsPublish {
+    githubSlug = 'gpc/grails-datastore-rest-client'
+    license {
+        name = 'Apache-2.0'
+    }
+    title = 'Grails Datastore Rest Client Legacy'
+    desc = '''\
+The Grails Datastore Rest Client plugin adapted to Grails 7. 
+You should really consider migrating to either the Spring Rest Client or the Micronaut Http Rest Client'''
+    developers = [
+            sbglasius   : "Søren Berg Glasius",
+            graemerocher: "Graeme Rocher",
+    ]
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
