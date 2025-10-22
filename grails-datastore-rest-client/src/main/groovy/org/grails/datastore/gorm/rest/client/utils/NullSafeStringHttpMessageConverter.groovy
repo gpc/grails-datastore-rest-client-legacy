@@ -33,10 +33,10 @@ class NullSafeStringHttpMessageConverter extends StringHttpMessageConverter {
 
     @Override
     protected String readInternal(Class<? extends String> clazz, HttpInputMessage inputMessage) throws IOException {
-        Charset charset = getCharSetForMediaType(inputMessage.getHeaders().getContentType());
+        Charset charset = getCharSetForMediaType(inputMessage.getHeaders().getContentType())
         final body = inputMessage.getBody()
         if(body) {
-            return StreamUtils.copyToString(body, charset);
+            return StreamUtils.copyToString(body, charset)
         }
         return null
     }

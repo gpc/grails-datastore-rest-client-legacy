@@ -34,4 +34,6 @@ buildCache {
 
 rootProject.name = 'grails-datastore-rest-client-legacy.ROOT'
 
-include ('grails-datastore-rest-client-legacy')
+include ('grails-datastore-rest-client')
+
+project(':grails-datastore-rest-client').name = 'grails-datastore-rest-client-legacy'

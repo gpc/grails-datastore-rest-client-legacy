@@ -1,23 +1,9 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url "https://repo.grails.org/grails/restricted" }
-        maven {
-            url = 'https://repository.apache.org/content/groups/snapshots'
-            content {
-                includeVersionByRegex('org[.]apache[.](grails|groovy).*', '.*', '.*-SNAPSHOT')
-            }
-        }
-    }
-    dependencies {
-        classpath platform("org.apache.grails:grails-bom:$grailsVersion")
-        classpath "org.apache.grails:grails-gradle-plugins"
-    }
+plugins {
+    id 'org.apache.grails.gradle.grails-plugin'
 }
 
+version = projectVersion
 group = "io.github.gpc"
-
-apply plugin: 'org.apache.grails.gradle.grails-plugin'
 
 repositories {
     mavenCentral()
@@ -43,7 +29,6 @@ dependencies {
     testImplementation 'commons-codec:commons-codec:1.19.0'
     testImplementation 'com.google.code.gson:gson:2.13.2'
     testImplementation 'org.apache.grails:grails-async'
-
 }
 
 compileJava.options.release = 17
@@ -66,3 +51,5 @@ You should really consider migrating to either the Spring Rest Client or the Mic
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
+
+apply from: "${rootProject.projectDir}/gradle/post-publish.gradle"
