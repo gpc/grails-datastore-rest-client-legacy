@@ -13,5 +13,17 @@ dependencies {
 }
 ```
 
+## Legacy notice
+
+This plugin was previously removed from Grails, but since it is used in lots of projects, I have decided to bring it
+back as a legacy plugin.
+
+For that reason, there is no documentation besides this README.md.
+
+The original author is Graeme Rocher. History is retained from https://github.com/apache/grails-data-mapping/tree/v6.1.13.RELEASE and that tag has also been retained in this repository.
+
+## License
+
 Grails and Groovy are licensed under the terms of the [Apache License, Version 2.0][Apache License, Version 2.0].
-[Apache License, Version 2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
+
+[Apache License, Version 2.0]: https://www.apache.org/licenses/LICENSE-2.0.html

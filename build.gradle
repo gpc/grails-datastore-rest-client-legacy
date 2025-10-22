@@ -17,7 +17,7 @@ subprojects {
         }
     }
 
-    if (name == 'grails-datastore-rest-client') {
+    if (name == 'grails-datastore-rest-client-legacy') {
         // This has to be applied here in the root project due to the nexus plugin requirements
         apply plugin: 'org.apache.grails.gradle.grails-publish'
     }

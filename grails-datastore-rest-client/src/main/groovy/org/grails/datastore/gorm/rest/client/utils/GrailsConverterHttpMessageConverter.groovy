@@ -45,7 +45,7 @@ class GrailsConverterHttpMessageConverter extends AbstractHttpMessageConverter<C
 
     @Override
     boolean canRead(Class<?> clazz, MediaType mediaType) {
-        return false;
+        return false
     }
 
     @Override

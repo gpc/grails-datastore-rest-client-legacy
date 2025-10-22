@@ -64,9 +64,9 @@ class GsonHttpMessageConverter extends AbstractHttpMessageConverter<JsonElement>
     protected void writeInternal(JsonElement t, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         final body = outputMessage.body
         if(body) {
-            JsonWriter jsonWriter = new JsonWriter(new OutputStreamWriter(body, getCharSetForMediaType(outputMessage.headers.getContentType())));
-            jsonWriter.setLenient(true);
-            Streams.write(t, jsonWriter);
+            JsonWriter jsonWriter = new JsonWriter(new OutputStreamWriter(body, getCharSetForMediaType(outputMessage.headers.getContentType())))
+            jsonWriter.setLenient(true)
+            Streams.write(t, jsonWriter)
         }
     }
 
