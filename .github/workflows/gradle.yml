@@ -1,94 +1,68 @@
-name: Java CI
+name: "Java CI"
 on:
   push:
     branches:
-      - master
-      - '[6-9]+.[1-9]+.x'
+      - '[4-9]+.[0-9]+.x'
   pull_request:
     branches:
-      - master
-      - '[6-9]+.[1-9]+.x'
+      - '[4-9]+.[0-9]+.x'
+  workflow_dispatch:
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test_project:
+    name: "Test Project"
+    runs-on: ubuntu-24.04
     strategy:
+      fail-fast: true
       matrix:
-        java: ['7', '8']
-    env:
-      WORKSPACE: ${{ github.workspace }}
-      GRADLE_OPTS: -Xmx1500m -Dfile.encoding=UTF-8
+        java: [ 17, 21 ]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@v4
+      - name: "☕️ Setup JDK"
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java }}
-      - name: Optional setup step
-        run: |
-          [ -f ./setup.sh ] && ./setup.sh || true
-      - name: Run Tests
-        run: |
-          (set -x ./gradlew --no-daemon --refresh-dependencies)
-          (set -x ./gradlew --no-daemon clean)
-          (set -x ./gradlew --no-daemon check -x :grails-datastore-gorm-test:test)
-          (set -x ./gradlew --no-daemon :grails-datastore-gorm-test:test)
-      - name: Publish Test Report
-        uses: scacap/action-surefire-report@v1
+          distribution: liberica
+      - name: "🐘 Setup Gradle"
+        uses: gradle/actions/setup-gradle@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          report_paths: '**/build/test-results/test/TEST-*.xml'
-      - name: Run Assemble
-        if: success() && github.event_name == 'push' && matrix.java == '7'
-        run: ./gradlew assemble
-      - name: Publish to repo.grails.org
-        if: success() && github.event_name == 'push' && matrix.java == '7'
+          develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+      - name: "🏃 Run tests"
+        run: ./gradlew check
+  publish_snapshot:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    name: "Build Project and Publish Snapshot release"
+    needs: test_project
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # updates gh-pages branch
+      packages: write # publishes snapshot to GitHub Packages
+    steps:
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@v4
+      - name: "☕️ Setup JDK"
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: liberica
+      - name: "🐘 Setup Gradle"
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+      - name: "🔨 Build Project"
+        run: ./gradlew build
+      - name: "📤 Publish Snapshot version to Artifactory (repo.grails.org)"
         env:
-          SECRING_FILE: ${{ secrets.SECRING_FILE }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
-          GRAILS_CENTRAL_USERNAME: ${{ secrets.GRAILS_CENTRAL_USERNAME }}
-          GRAILS_CENTRAL_PASSWORD: ${{ secrets.GRAILS_CENTRAL_PASSWORD }}
-        run: |
-          echo $SECRING_FILE | base64 -d > secring.gpg
-          ./gradlew -Dorg.gradle.internal.publish.checksums.insecure=true -Psigning.keyId="$SIGNING_KEY" -Psigning.password="$SIGNING_PASSPHRASE" -Psigning.secretKeyRingFile="secring.gpg" publish
-      - name: Extract branch name
-        if: success() && github.event_name == 'push' && matrix.java == '7'
-        id: extract_branch
-        run: echo ::set-output name=value::${GITHUB_REF:11}
-      - name: Create Snapshot Message for the Workflow Dispatch
-        if: success() && github.event_name == 'push' && matrix.java == '7'
-        id: dispatch_message
-        run: echo ::set-output name=value::{\"message\":\"New Core Snapshot $(date) - $GITHUB_SHA\"}
-      - name: Invoke the Java CI workflow in GORM Hibernate5
-        if: success() && github.event_name == 'push' && matrix.java == '7'
-        uses: benc-uk/workflow-dispatch@v1.1
-        with:
-          workflow: Java CI
-          repo: grails/gorm-hibernate5
-          ref: ${{ steps.extract_branch.outputs.value }}
-          token: ${{ secrets.GH_TOKEN }}
-          inputs: ${{ steps.dispatch_message.outputs.value }}
-      - name: Invoke the Java CI workflow in GORM MongoDB
-        if: success() && github.event_name == 'push' && matrix.java == '7'
-        uses: benc-uk/workflow-dispatch@v1.1
-        with:
-          workflow: Java CI
-          repo: grails/gorm-mongodb
-          ref: ${{ steps.extract_branch.outputs.value }}
-          token: ${{ secrets.GH_TOKEN }}
-          inputs: ${{ steps.dispatch_message.outputs.value }}
-      - name: Invoke the Java CI workflow in GORM Neo4j
-        if: success() && github.event_name == 'push' && matrix.java == '7'
-        uses: benc-uk/workflow-dispatch@v1.1
-        with:
-          workflow: Java CI
-          repo: grails/gorm-neo4j
-          ref: ${{ steps.extract_branch.outputs.value }}
-          token: ${{ secrets.GH_TOKEN }}
-          inputs: ${{ steps.dispatch_message.outputs.value }}
+          GRAILS_PUBLISH_RELEASE: 'false'
+          MAVEN_PUBLISH_USERNAME: ${{ secrets.MAVEN_PUBLISH_USERNAME }}
+          MAVEN_PUBLISH_PASSWORD: ${{ secrets.MAVEN_PUBLISH_PASSWORD }}
+          MAVEN_PUBLISH_URL: ${{ secrets.MAVEN_PUBLISH_SNAPSHOT_URL }}
+        run: ./gradlew publish
+      - name: "📖 Generate Snapshot Documentation"
+        run: ./gradlew docs
+      - name: "📤 Publish Snapshot Documentation to Github Pages"
+        uses: apache/grails-github-actions/deploy-github-pages@asf
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GRADLE_PUBLISH_RELEASE: 'false'
+          SOURCE_FOLDER: build/docs
