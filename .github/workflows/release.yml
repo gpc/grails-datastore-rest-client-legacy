@@ -117,16 +117,16 @@ jobs:
           ./gradlew
           findSonatypeStagingRepository
           releaseSonatypeStagingRepository
-      - name: "📖 Generate Documentation"
-        if: ${{ hashFiles('src/main/asciidoc/**') != '' }}
-        run: ./gradlew docs
-      - name: "📤 Publish Documentation to Github Pages"
-        uses: apache/grails-github-actions/deploy-github-pages@asf
-        if: ${{ hashFiles('src/main/asciidoc/**') != '' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GRADLE_PUBLISH_RELEASE: 'true'
-          SOURCE_FOLDER: build/docs
-          VERSION: ${{ needs.publish.outputs.release_version }}
+#      - name: "📖 Generate Documentation"
+#        if: ${{ hashFiles('src/main/asciidoc/**') != '' }}
+#        run: ./gradlew docs
+#      - name: "📤 Publish Documentation to Github Pages"
+#        uses: apache/grails-github-actions/deploy-github-pages@asf
+#        if: ${{ hashFiles('src/main/asciidoc/**') != '' }}
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          GRADLE_PUBLISH_RELEASE: 'true'
+#          SOURCE_FOLDER: build/docs
+#          VERSION: ${{ needs.publish.outputs.release_version }}
       - name: "⚙️ Run post-release"
         uses: apache/grails-github-actions/post-release@asf
