@@ -34,7 +34,7 @@ dependencies {
 compileJava.options.release = 17
 
 grailsPublish {
-    githubSlug = 'gpc/grails-datastore-rest-client'
+    githubSlug = 'gpc/grails-datastore-rest-client-legacy'
     license {
         name = 'Apache-2.0'
     }
