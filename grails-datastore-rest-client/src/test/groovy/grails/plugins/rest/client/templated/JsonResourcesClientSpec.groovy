@@ -87,7 +87,6 @@ class JsonResourcesClientSpec extends Specification {
 
     }
 
-    @spock.lang.Ignore
     void "Test that the post method correctly sends JSON to the appropriate URL"() {
         setup:
             RestBuilder restBuilder = new RestBuilder()
@@ -108,6 +107,7 @@ class JsonResourcesClientSpec extends Specification {
 
     }
 }
+
 class Book {
     String title
 }
