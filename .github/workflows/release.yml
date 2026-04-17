@@ -161,12 +161,20 @@ jobs:
           payload: |
             {
               "text": ":rocket: *${{ github.repository }}* just released *${{ github.event.release.tag_name }}*",
-              "attachments": [
+              "blocks": [
                 {
-                  "color": "#36a64f",
-                  "title": "${{ github.event.release.name }}",
-                  "title_link": "${{ github.event.release.html_url }}",
-                  "text": ${{ steps.body.outputs.body }}
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":rocket: *<${{ github.event.release.html_url }}|${{ github.event.release.tag_name }}>* of *${{ github.repository }}* has been released"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ${{ steps.body.outputs.body }}
+                  }
                 }
               ]
             }
