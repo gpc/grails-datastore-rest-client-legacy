@@ -135,15 +135,26 @@ jobs:
     needs: [ publish, release ]
     if: ${{ success() }}
     runs-on: ubuntu-latest
+
     steps:
       - name: Prepare release body
         id: body
+        env:
+          RELEASE_BODY: ${{ github.event.release.body }}
         run: |
-          if [ -n "${{ github.event.release.body }}" ]; then
-            echo "body=${{ github.event.release.body }}" >> $GITHUB_OUTPUT
+          # Write to a temporary file, preserving newlines safely
+          if [ -n "$RELEASE_BODY" ]; then
+            printf "%s" "$RELEASE_BODY" > body.txt
           else
-            echo "body=No release notes provided." >> $GITHUB_OUTPUT
+            echo "No release notes provided." > body.txt
           fi
+          
+          # Sanitize: remove carriage returns (from Windows-style line endings)
+          tr -d '\r' < body.txt > body_clean.txt
+          
+          # Encode as a single-line JSON-safe string using jq
+          echo "body=$(jq -Rs . < body_clean.txt)" >> "$GITHUB_OUTPUT"
+
       - name: Send Slack message
         uses: slackapi/slack-github-action@v1.27.0
         with:
@@ -155,9 +166,7 @@ jobs:
                   "color": "#36a64f",
                   "title": "${{ github.event.release.name }}",
                   "title_link": "${{ github.event.release.html_url }}",
-                  "text": ${{ 
-                    toJson(steps.body.outputs.body) 
-                  }}
+                  "text": ${{ steps.body.outputs.body }}
                 }
               ]
             }
