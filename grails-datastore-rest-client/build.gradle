@@ -19,19 +19,19 @@ repositories {
 dependencies {
     compileOnly platform("org.apache.grails:grails-bom:$grailsVersion")
     compileOnly 'org.apache.grails:grails-dependencies-starter-web'
-    compileOnly 'commons-codec:commons-codec:1.21.0'
-    compileOnly 'com.google.code.gson:gson:2.13.2'
+    compileOnly 'commons-codec:commons-codec'
+    compileOnly 'com.google.code.gson:gson'
     compileOnly 'org.apache.grails:grails-async'
 
     testImplementation platform("org.apache.grails:grails-bom:$grailsVersion")
     testImplementation 'org.apache.grails:grails-testing-support-web'
     testImplementation 'org.apache.grails:grails-testing-support-datamapping'
-    testImplementation 'commons-codec:commons-codec:1.21.0'
-    testImplementation 'com.google.code.gson:gson:2.13.2'
+    testImplementation 'commons-codec:commons-codec'
+    testImplementation 'com.google.code.gson:gson'
     testImplementation 'org.apache.grails:grails-async'
 }
 
-compileJava.options.release = 17
+compileJava.options.release = 21
 
 grailsPublish {
     githubSlug = 'gpc/grails-datastore-rest-client-legacy'

@@ -16,7 +16,6 @@ package grails.plugins.rest.client
 
 import grails.converters.JSON
 import grails.converters.XML
-import grails.web.JSONBuilder
 import groovy.transform.CompileStatic
 import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.StreamingMarkupBuilder

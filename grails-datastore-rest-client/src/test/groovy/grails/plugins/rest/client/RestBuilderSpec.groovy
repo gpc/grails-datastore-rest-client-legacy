@@ -1,7 +1,6 @@
 package grails.plugins.rest.client
 
 import grails.converters.JSON
-import grails.web.JSONBuilder
 import grails.web.http.HttpHeaders
 import groovy.xml.slurpersupport.GPathResult
 import org.grails.web.converters.configuration.ConverterConfiguration

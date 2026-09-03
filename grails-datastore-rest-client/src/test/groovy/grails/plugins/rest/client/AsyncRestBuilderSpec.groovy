@@ -3,7 +3,6 @@ package grails.plugins.rest.client
 import grails.async.Promise
 import grails.converters.JSON
 import grails.plugins.rest.client.async.AsyncRestBuilder
-import grails.web.JSONBuilder
 import grails.web.http.HttpHeaders
 import groovy.xml.slurpersupport.GPathResult
 import org.grails.web.json.JSONArray

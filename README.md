@@ -13,6 +13,12 @@ dependencies {
 }
 ```
 
+## Grails 8 notes
+
+Grails 8 removed `grails.web.JSONBuilder`. The `json { ... }` DSL of `RequestCustomizer` relies on it, so the
+class has been forward ported to `grails.plugins.rest.client.JSONBuilder` and the DSL behaves as before. Code that
+imported `grails.web.JSONBuilder` directly must switch to the new package.
+
 ## Legacy notice
 
 This plugin was previously removed from Grails, but since it is used in lots of projects, I have decided to bring it

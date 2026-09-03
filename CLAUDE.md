@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Grails 7 plugin (`io.github.gpc:grails-datastore-rest-client-legacy`) that provides a low-level REST/HTTP client for Grails applications. It is a forward port of the original `grails-datastore-rest-client` that was removed from Grails core. The main module is `grails-datastore-rest-client/`.
+This is a Grails 8 plugin (`io.github.gpc:grails-datastore-rest-client-legacy`) that provides a low-level REST/HTTP client for Grails applications. It is a forward port of the original `grails-datastore-rest-client` that was removed from Grails core. The main module is `grails-datastore-rest-client/`.
 
 ## Commands
 
@@ -20,7 +20,7 @@ Run a single test class:
 ./gradlew :grails-datastore-rest-client:test --tests "grails.plugins.rest.client.RestBuilderSpec"
 ```
 
-Key versions (in `gradle.properties`): Java 17, Grails 7.0.10, project version `7.0.x-SNAPSHOT`.
+Key versions (in `gradle.properties`): Java 21, Grails 8.0.0-M6, project version `8.0.0-SNAPSHOT`. The build requires Gradle 9.6.0 (wrapper) and a JDK 21 toolchain — see `.sdkmanrc`.
 
 ## Architecture
 
@@ -33,6 +33,6 @@ The library wraps Spring's `RestTemplate` with a Groovy-friendly DSL. Entry poin
 
 Templated resource clients (`AbstractResourcesClient`, `JsonResourcesClient`, `XmlResourcesClient`, and their `Async*` variants) provide CRUD patterns on top of `RestBuilder` for RESTful collection resources.
 
-**Message converters** (in `grails.plugins.rest.client.encoding`) handle serialization/deserialization: `JsonHttpMessageConverter`, `GsonHttpMessageConverter`, `GPathXmlHttpMessageConverter`, `WritableHttpMessageConverter`, `GrailsConverterHttpMessageConverter`, `NullSafeStringHttpMessageConverter`.
+**Message converters** (in `org.grails.datastore.gorm.rest.client.{json,xml,utils}`) handle serialization/deserialization: `JsonHttpMessageConverter`, `GsonHttpMessageConverter`, `GPathXmlHttpMessageConverter`, `WritableHttpMessageConverter`, `GrailsConverterHttpMessageConverter`, `NullSafeStringHttpMessageConverter`.
 
 Tests use Spock (JUnit Platform runner). The three spec files cover `RestBuilder`, `AsyncRestBuilder`, and `JsonResourcesClient`.
