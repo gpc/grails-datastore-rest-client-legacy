@@ -91,8 +91,7 @@ class JSONBuilder {
                 }
                 n.putAll(args[0])
             }
-            else if (args[-1] instanceof Closure) {
-                final Object callable = args[-1]
+            else if (args[-1] instanceof Closure callable) {
                 handleClosureNode(methodName, callable)
             }
             else if (args.size() == 1) {
@@ -147,8 +146,7 @@ class JSONBuilder {
         }
         else if (value instanceof List) {
             value = value.collect {
-                if (it instanceof Closure) {
-                    def callable = it
+                if (it instanceof Closure callable) {
                     final JSONBuilder localBuilder = new JSONBuilder()
                     callable.delegate = localBuilder
                     callable.resolveStrategy = Closure.DELEGATE_FIRST
