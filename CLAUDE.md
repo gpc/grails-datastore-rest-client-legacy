@@ -20,7 +20,7 @@ Run a single test class:
 ./gradlew :grails-datastore-rest-client:test --tests "grails.plugins.rest.client.RestBuilderSpec"
 ```
 
-Key versions (in `gradle.properties`): Java 21, Grails 8.0.0-M6, project version `8.0.0-SNAPSHOT`. The build requires Gradle 9.6.0 (wrapper) and a JDK 21 toolchain — see `.sdkmanrc`.
+Key versions (in `gradle.properties`): Java 21, Grails 8.0.0, project version `8.0.0-SNAPSHOT`. The build requires Gradle 9.8.0 (wrapper) and a JDK 21 toolchain — see `.sdkmanrc`.
 
 ## Architecture
 
